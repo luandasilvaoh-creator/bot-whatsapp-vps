@@ -48,7 +48,7 @@ Bot WhatsApp profissional com sistema de atendimento automatizado, gestão de le
 ssh root@SEU_IP
 
 # 2. Baixar e executar instalador
-wget https://raw.githubusercontent.com/SEU_REPO/main/install.sh
+wget https://github.com/luandasilvaoh-creator/bot-whatsapp-vps.git)
 chmod +x install.sh
 sudo ./install.sh
 
