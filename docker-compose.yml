@@ -1,0 +1,109 @@
+# ============================================
+# 🐋 DOCKER COMPOSE - BOT WHATSAPP
+# Versão com escalabilidade e persistência
+# ============================================
+
+version: '3.8'
+
+services:
+  # ============================================
+  # Bot WhatsApp Principal
+  # ============================================
+  bot-whatsapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bot-whatsapp
+    restart: unless-stopped
+    
+    ports:
+      - "8001:8001"
+    
+    environment:
+      - NODE_ENV=production
+      - PORT=8001
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
+      - ATENDENTE_NUMBER=${ATENDENTE_NUMBER}
+    
+    volumes:
+      # Persistência de autenticação (QR Code)
+      - ./auth:/app/auth
+      # Persistência de leads
+      - ./src/leads:/app/src/leads
+      # Persistência de histórico
+      - ./src/chat-history:/app/src/chat-history
+      # Logs
+      - ./logs:/app/logs
+      # Configuração
+      - ./.env:/app/.env:ro
+    
+    networks:
+      - bot-network
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8001/api/status', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  
+  # ============================================
+  # Nginx - Proxy Reverso
+  # ============================================
+  nginx:
+    image: nginx:alpine
+    container_name: bot-nginx
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+    
+    depends_on:
+      - bot-whatsapp
+    
+    networks:
+      - bot-network
+  
+  # ============================================
+  # Watchtower - Auto-Update (Opcional)
+  # ============================================
+  watchtower:
+    image: containrrr/watchtower
+    container_name: bot-watchtower
+    restart: unless-stopped
+    
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=86400
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+    
+    command: bot-whatsapp
+    
+    networks:
+      - bot-network
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  auth-data:
+  leads-data:
+  history-data:
+  logs-data:

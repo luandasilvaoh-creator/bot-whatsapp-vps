@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard MultSolutions Bot v3.0</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #667eea;
+      --primary-dark: #5568d3;
+      --secondary: #764ba2;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #1f2937;
+      --light: #f9fafb;
+      --border: #e5e7eb;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Header Modernizado */
+    .header {
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .logo {
+      font-size: 56px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .header-info h1 {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+    
+    .header-info p {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .header-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s;
+    }
+    
+    .badge-success {
+      background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      color: #155724;
+      border: 2px solid var(--success);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .badge-warning {
+      background: linear-gradient(135deg, #fff3cd, #ffe69c);
+      color: #856404;
+      border: 2px solid var(--warning);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Navegação por Abas */
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding: 4px;
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      border: none;
+      background: white;
+      color: #6b7280;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Grid Stats Modernizado */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #6b7280;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      color: #9ca3af;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    /* Webhook Config Section */
+    .webhook-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+    
+    .webhook-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .webhook-header h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .webhook-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    
+    .webhook-status.active {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .webhook-status.inactive {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .webhook-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .webhook-card {
+      background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      transition: all 0.3s;
+    }
+    
+    .webhook-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+    
+    .webhook-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .input-group {
+      margin-bottom: 16px;
+    }
+    
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* QR Code Section */
+    .qr-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .qr-section h2 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+    
+    .qr-container {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 20px;
+      padding: 40px;
+      margin: 24px 0;
+      min-height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px dashed var(--border);
+    }
+    
+    .qr-code {
+      max-width: 280px;
+      width: 100%;
+      border-radius: 16px;
+      background: white;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Leads Table Modernizado */
+    .leads-section {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+    
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .table-header h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    
+    .search-box {
+      padding: 12px 20px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      width: 320px;
+      max-width: 100%;
+      transition: all 0.3s;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 12px;
+    }
+    
+    th {
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    
+    tbody tr {
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+    
+    .device-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    .device-android { background: #d4edda; color: #155724; }
+    .device-iphone { background: #cce5ff; color: #004085; }
+    .device-web { background: #fff3cd; color: #856404; }
+    
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #9ca3af;
+    }
+    
+    .empty-state-icon {
+      font-size: 72px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Chat History Styles */
+    .history-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 20px;
+      height: 600px;
+    }
+
+    .conversations-list {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    .conversation-item {
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .conversation-item:hover {
+      background: #f3f4f6;
+      border-color: var(--primary);
+    }
+
+    .conversation-item.active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .conversation-item h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .conversation-item p {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .chat-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .chat-header h2 {
+      font-size: 20px;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .chat-stats {
+      display: flex;
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f9fafb;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 16px;
+    }
+
+    .message.bot .message-bubble {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .message.user .message-bubble {
+      background: #e5e7eb;
+      color: var(--dark);
+    }
+
+    .message-time {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    .chat-actions {
+      padding: 15px 20px;
+      border-top: 2px solid var(--border);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      color: white;
+      padding: 30px 20px;
+      margin-top: 40px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    
+    .footer p {
+      margin: 5px 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header { flex-direction: column; text-align: center; }
+      .grid { grid-template-columns: 1fr; }
+      .webhook-grid { grid-template-columns: 1fr; }
+      .history-grid { grid-template-columns: 1fr; height: auto; }
+      table { font-size: 12px; }
+      th, td { padding: 12px 8px; }
+      .search-box { width: 100%; }
+      .stat-value { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="logo">🤖</div>
+        <div class="header-info">
+          <h1>MultSolutions v3.0</h1>
+          <p>Sistema de Atendimento Inteligente WhatsApp + N8N</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="badge badge-warning" id="status-badge">
+          <span>⏳</span>
+          <span id="status-text">Aguardando...</span>
+        </div>
+        <button class="btn btn-primary" onclick="location.reload()">
+          🔄 Atualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Navegação por Abas -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('leads')">👥 Leads</button>
+      <button class="tab-btn" onclick="switchTab('history')">💬 Histórico</button>
+      <button class="tab-btn" onclick="switchTab('webhook')">🔗 N8N</button>
+    </div>
+
+    <!-- ABA: Dashboard -->
+    <div id="tab-dashboard" class="tab-content active">
+      <!-- Stats Grid -->
+      <div class="grid">
+        <div class="card">
+          <div class="card-title">👥 Total de Leads</div>
+          <div class="stat-value" id="total-leads">0</div>
+          <div class="stat-label">Contatos registrados</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">💬 Interações</div>
+          <div class="stat-value" id="total-interactions">0</div>
+          <div class="stat-label">Mensagens trocadas</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">⏱️ Tempo Online</div>
+          <div class="stat-value" id="uptime">--</div>
+          <div class="stat-label">Desde o início</div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title">📱 Dispositivos</div>
+          <div class="stat-value" id="devices-count">0</div>
+          <div class="stat-label">Android • iPhone • Web</div>
+        </div>
+      </div>
+
+      <!-- QR Code Section -->
+      <div class="qr-section" id="qr-section" style="display: none;">
+        <h2>📱 Conectar WhatsApp</h2>
+        <p style="color: #6b7280; margin: 10px 0 20px;">Escaneie o QR Code com seu WhatsApp</p>
+        
+        <div class="qr-container" id="qr-container">
+          <div class="spinner"></div>
+        </div>
+        
+        <button class="btn btn-primary" id="download-qr" style="display: none;" onclick="downloadQR()">
+          💾 Baixar QR Code
+        </button>
+      </div>
+    </div>
+
+    <!-- ABA: Leads -->
+    <div id="tab-leads" class="tab-content">
+      <div class="leads-section">
+        <div class="table-header">
+          <h2>📋 Leads Recentes</h2>
+          <input 
+            type="text" 
+            class="search-box" 
+            id="search-leads" 
+            placeholder="🔍 Buscar por nome ou número..."
+            onkeyup="filterLeads()"
+          />
+        </div>
+        
+        <div id="leads-container">
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>Carregando leads...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA: Histórico de Conversas -->
+    <div id="tab-history" class="tab-content">
+      <div class="leads-section">
+        <div class="table-header">
+          <h2>💬 Histórico de Conversas</h2>
+          <input 
+            type="text" 
+            class="search-box" 
+            id="search-history" 
+            placeholder="🔍 Buscar conversa..."
+            onkeyup="filterConversations()"
+          />
+        </div>
+
+        <div class="history-grid">
+          <!-- Lista de Conversas -->
+          <div class="conversations-list" id="conversations-list">
+            <div class="empty-state">
+              <div class="empty-state-icon">📭</div>
+              <p style="font-size: 12px;">Carregando...</p>
+            </div>
+          </div>
+
+          <!-- Área de Chat -->
+          <div class="chat-container">
+            <div class="chat-header">
+              <h2 id="chat-lead-name">Selecione uma conversa</h2>
+              <div class="chat-stats" id="chat-stats"></div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+              <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <p>Selecione uma conversa para visualizar</p>
+              </div>
+            </div>
+            
+            <div class="chat-actions">
+              <button class="btn btn-primary btn-small" onclick="exportCurrentChat()">
+                📥 Exportar
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="getAIFormat()">
+                🤖 Formato IA
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="searchInCurrentChat()">
+                🔍 Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA: Webhook N8N -->
+    <div id="tab-webhook" class="tab-content">
+      <div class="webhook-section">
+        <div class="webhook-header">
+          <h2>🔗 Integração N8N</h2>
+          <div class="webhook-status inactive" id="webhook-status">
+            <span>●</span>
+            <span>Não configurado</span>
+          </div>
+        </div>
+        
+        <div class="webhook-grid">
+          <div class="webhook-card">
+            <h3>🎯 Eventos Disponíveis</h3>
+            <div class="input-group">
+              <label>Webhook URL Principal</label>
+              <input type="text" id="webhook-url" placeholder="https://n8n.seudominio.com/webhook/bot">
+            </div>
+            <div class="input-group">
+              <label>Eventos Ativos</label>
+              <select id="webhook-events" multiple style="height: 100px;">
+                <option value="MENSAGEM_RECEBIDA" selected>📨 Mensagem Recebida</option>
+                <option value="NOVO_LEAD" selected>👤 Novo Lead</option>
+                <option value="AGENDAMENTO" selected>📅 Agendamento</option>
+                <option value="TESTE_GRATIS" selected>🎁 Teste Grátis</option>
+                <option value="FALAR_ATENDENTE" selected>👨‍💼 Atendente Solicitado</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveWebhookConfig()" style="width: 100%;">
+              💾 Salvar Configuração
+            </button>
+          </div>
+
+          <div class="webhook-card">
+            <h3>📊 Teste & Logs</h3>
+            <div style="margin-bottom: 16px;">
+              <button class="btn btn-secondary" onclick="testWebhook()" style="width: 100%; margin-bottom: 10px;">
+                🧪 Testar Webhook
+              </button>
+              <button class="btn btn-secondary" onclick="viewLogs()" style="width: 100%;">
+                📋 Ver Logs de Envio
+              </button>
+            </div>
+            <div id="webhook-test-result" style="padding: 12px; background: #f3f4f6; border-radius: 8px; font-size: 13px; display: none;">
+              <strong>Resultado:</strong>
+              <pre id="test-result-text" style="margin-top: 8px; white-space: pre-wrap;"></pre>
+            </div>
+          </div>
+
+          <div class="webhook-card">
+            <h3>⚙️ Configurações Avançadas</h3>
+            <div class="input-group">
+              <label>Timeout (ms)</label>
+              <input type="number" id="webhook-timeout" value="5000" placeholder="5000">
+            </div>
+            <div class="input-group">
+              <label>Retry (tentativas)</label>
+              <input type="number" id="webhook-retry" value="3" placeholder="3">
+            </div>
+            <div class="input-group">
+              <label>Auth Token (opcional)</label>
+              <input type="password" id="webhook-token" placeholder="Bearer token...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>MultSolutions © 2024</strong> • Bot WhatsApp Business v3.0</p>
+      <p>Powered by Baileys, WhatsApp Web API & N8N Integration</p>
+    </div>
+  </div>
+
+  <script>
+    let startTime = Date.now();
+    let allLeads = [];
+    let allConversations = [];
+    let currentConversation = null;
+    let currentHistory = null;
+    let webhookConfig = {
+      url: '',
+      events: ['MENSAGEM_RECEBIDA', 'NOVO_LEAD', 'AGENDAMENTO', 'TESTE_GRATIS', 'FALAR_ATENDENTE'],
+      timeout: 5000,
+      retry: 3,
+      token: ''
+    };
+
+    // Troca de abas
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+
+      // Carrega dados ao trocar para aba
+      if (tabName === 'history') {
+        loadConversations();
+      }
+    }
+    
+    // Webhook
+    function loadWebhookConfig() {
+      const saved = localStorage.getItem('webhookConfig');
+      if (saved) {
+        webhookConfig = JSON.parse(saved);
+        document.getElementById('webhook-url').value = webhookConfig.url || '';
+        document.getElementById('webhook-timeout').value = webhookConfig.timeout || 5000;
+        document.getElementById('webhook-retry').value = webhookConfig.retry || 3;
+        document.getElementById('webhook-token').value = webhookConfig.token || '';
+        
+        if (webhookConfig.url) {
+          document.getElementById('webhook-status').className = 'webhook-status active';
+          document.getElementById('webhook-status').innerHTML = '<span>●</span><span>Ativo</span>';
+        }
+      }
+    }
+    
+    function saveWebhookConfig() {
+      const url = document.getElementById('webhook-url').value;
+      const events = Array.from(document.getElementById('webhook-events').selectedOptions).map(o => o.value);
+      const timeout = parseInt(document.getElementById('webhook-timeout').value);
+      const retry = parseInt(document.getElementById('webhook-retry').value);
+      const token = document.getElementById('webhook-token').value;
+      
+      webhookConfig = { url, events, timeout, retry, token };
+      localStorage.setItem('webhookConfig', JSON.stringify(webhookConfig));
+      
+      if (url) {
+        document.getElementById('webhook-status').className = 'webhook-status active';
+        document.getElementById('webhook-status').innerHTML = '<span>●</span><span>Ativo</span>';
+      }
+      
+      alert('✅ Configuração salva com sucesso!');
+    }
+    
+    async function testWebhook() {
+      const url = document.getElementById('webhook-url').value;
+      if (!url) {
+        alert('❌ Configure uma URL de webhook primeiro');
+        return;
+      }
+      
+      const resultDiv = document.getElementById('webhook-test-result');
+      const resultText = document.getElementById('test-result-text');
+      
+      resultDiv.style.display = 'block';
+      resultText.textContent = 'Enviando teste...';
+      
+      try {
+        const response = await fetch('/api/webhook/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            url,
+            data: {
+              event: 'TESTE',
+              timestamp: new Date().toISOString(),
+              message: 'Teste de conexão do Dashboard'
+            }
+          })
+        });
+        
+        const result = await response.json();
+        resultText.textContent = JSON.stringify(result, null, 2);
+      } catch (error) {
+        resultText.textContent = `Erro: ${error.message}`;
+      }
+    }
+    
+    function viewLogs() {
+      alert('🚧 Funcionalidade em desenvolvimento!\n\nEm breve você poderá visualizar todos os logs de envio para o N8N.');
+    }
+    
+    async function updateStatus() {
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        
+        const statusBadge = document.getElementById('status-badge');
+        const qrSection = document.getElementById('qr-section');
+        const qrContainer = document.getElementById('qr-container');
+        const downloadBtn = document.getElementById('download-qr');
+        
+        if (data.qrCode) {
+          statusBadge.className = 'badge badge-warning';
+          statusBadge.innerHTML = '<span>⏳</span><span>Aguardando Scan</span>';
+          qrSection.style.display = 'block';
+          qrContainer.innerHTML = `<img src="${data.qrCode}" class="qr-code" id="qr-image" alt="QR Code" />`;
+          downloadBtn.style.display = 'inline-flex';
+        } else if (data.status.includes('✅')) {
+          statusBadge.className = 'badge badge-success';
+          statusBadge.innerHTML = '<span>✅</span><span>Conectado</span>';
+          qrSection.style.display = 'none';
+        } else {
+          statusBadge.className = 'badge badge-warning';
+          statusBadge.innerHTML = `<span>🔄</span><span>${data.status}</span>`;
+          qrSection.style.display = 'none';
+        }
+        
+        if (data.startTime) {
+          startTime = data.startTime;
+        }
+      } catch (error) {
+        console.error('Erro ao buscar status:', error);
+      }
+    }
+    
+    async function updateStats() {
+      try {
+        const response = await fetch('/api/stats');
+        const data = await response.json();
+        
+        document.getElementById('total-leads').textContent = data.totalLeads || 0;
+        document.getElementById('total-interactions').textContent = data.totalInteractions || 0;
+        
+        const devicesCount = Object.values(data.devicesDistribution || {}).reduce((a, b) => a + b, 0);
+        document.getElementById('devices-count').textContent = devicesCount || 0;
+      } catch (error) {
+        console.error('Erro ao buscar estatísticas:', error);
+      }
+    }
+    
+    async function loadLeads() {
+      try {
+        const response = await fetch('/api/leads');
+        allLeads = await response.json();
+        renderLeads(allLeads);
+      } catch (error) {
+        console.error('Erro ao carregar leads:', error);
+        document.getElementById('leads-container').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <p>Erro ao carregar leads</p>
+          </div>
+        `;
+      }
+    }
+    
+    function renderLeads(leads) {
+      const container = document.getElementById('leads-container');
+      
+      if (leads.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>Nenhum lead encontrado</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const table = `
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Número</th>
+              <th>Dispositivo</th>
+              <th>Última Ação</th>
+              <th>Interações</th>
+              <th>Última Msg</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${leads.map(lead => `
+              <tr>
+                <td><strong>${lead.name || 'Sem nome'}</strong></td>
+                <td>${lead.number}</td>
+                <td>
+                  <span class="device-badge device-${(lead.deviceType || 'unknown').toLowerCase()}">
+                    ${lead.deviceType || 'UNKNOWN'}
+                  </span>
+                </td>
+                <td>${lead.lastOption || 'Nenhuma'}</td>
+                <td>${lead.interactionCount || 0}</td>
+                <td>${lead.lastMessageFormatted || 'N/A'}</td>
+                <td>
+                  <button class="btn btn-secondary btn-small" onclick="viewHistory('${lead.number}')">
+                    💬 Ver Chat
+                  </button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = table;
+    }
+    
+    function filterLeads() {
+      const searchTerm = document.getElementById('search-leads').value.toLowerCase();
+      
+      const filtered = allLeads.filter(lead => 
+        (lead.name || '').toLowerCase().includes(searchTerm) ||
+        (lead.number || '').includes(searchTerm)
+      );
+      
+      renderLeads(filtered);
+    }
+
+    // HISTÓRICO DE CONVERSAS
+    async function loadConversations() {
+      try {
+        const response = await fetch('/api/chat-history');
+        allConversations = await response.json();
+        renderConversations(allConversations);
+      } catch (error) {
+        console.error('❌ Erro ao carregar conversas:', error);
+        document.getElementById('conversations-list').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">❌</div>
+            <p style="font-size: 12px;">Erro ao carregar</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderConversations(conversations) {
+      const container = document.getElementById('conversations-list');
+      
+      if (conversations.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p style="font-size: 12px;">Nenhuma conversa</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = conversations.map(conv => `
+        <div 
+          class="conversation-item ${currentConversation === conv.number ? 'active' : ''}" 
+          onclick="loadChat('${conv.number}')"
+        >
+          <h3>${conv.name}</h3>
+          <p>📱 ${conv.number}</p>
+          <p>💬 ${conv.totalMessages} mensagens</p>
+          <p>🕒 ${conv.lastMessageFormatted}</p>
+        </div>
+      `).join('');
+    }
+
+    function filterConversations() {
+      const searchTerm = document.getElementById('search-history').value.toLowerCase();
+      
+      const filtered = allConversations.filter(conv => 
+        conv.name.toLowerCase().includes(searchTerm) ||
+        conv.number.includes(searchTerm)
+      );
+      
+      renderConversations(filtered);
+    }
+
+    async function loadChat(number) {
+      try {
+        currentConversation = number;
+        
+        const response = await fetch(`/api/chat-history/${number}`);
+        currentHistory = await response.json();
+        
+        renderChat(currentHistory);
+        renderConversations(allConversations);
+        
+        const statsResponse = await fetch(`/api/chat-history/${number}/stats`);
+        const stats = await statsResponse.json();
+        renderStats(stats);
+        
+      } catch (error) {
+        console.error('❌ Erro ao carregar chat:', error);
+      }
+    }
+
+    function renderChat(history) {
+      const container = document.getElementById('chat-messages');
+      document.getElementById('chat-lead-name').textContent = history.leadName;
+      
+      if (history.messages.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>Nenhuma mensagem ainda</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = history.messages.map(msg => `
+        <div class="message ${msg.from}">
+          <div class="message-bubble">
+            <div>${msg.message}</div>
+            <div class="message-time">${msg.timestampFormatted}</div>
+          </div>
+        </div>
+      `).join('');
+      
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderStats(stats) {
+      const container = document.getElementById('chat-stats');
+      const minutes = Math.floor(stats.conversationDuration / 60);
+      
+      container.innerHTML = `
+        <span class="badge badge-success">👤 ${stats.userMessages}</span>
+        <span class="badge badge-success">🤖 ${stats.botMessages}</span>
+        <span class="badge badge-success">⏱️ ${minutes}min</span>
+      `;
+    }
+
+    async function exportCurrentChat() {
+      if (!currentConversation) {
+        alert('❌ Selecione uma conversa primeiro');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/chat-history/${currentConversation}/export`);
+        const blob = await response.blob();
+        
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `conversa_${currentConversation}.md`;
+        a.click();
+        
+        alert('✅ Conversa exportada com sucesso!');
+      } catch (error) {
+        alert('❌ Erro ao exportar conversa');
+      }
+    }
+
+    async function getAIFormat() {
+      if (!currentConversation) {
+        alert('❌ Selecione uma conversa primeiro');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/chat-history/${currentConversation}/ai-format`);
+        const data = await response.json();
+        
+        navigator.clipboard.writeText(data.formatted);
+        alert('✅ Formato para IA copiado!\n\nUse como contexto para GPT-4, Claude, etc.');
+      } catch (error) {
+        alert('❌ Erro ao gerar formato para IA');
+      }
+    }
+
+    async function searchInCurrentChat() {
+      if (!currentConversation) {
+        alert('❌ Selecione uma conversa primeiro');
+        return;
+      }
+      
+      const searchTerm = prompt('🔍 Digite o que deseja buscar:');
+      if (!searchTerm) return;
+      
+      try {
+        const response = await fetch(`/api/chat-history/${currentConversation}/search?q=${encodeURIComponent(searchTerm)}`);
+        const data = await response.json();
+        
+        if (data.totalResults === 0) {
+          alert('❌ Nenhuma mensagem encontrada');
+          return;
+        }
+        
+        alert(`✅ Encontradas ${data.totalResults} mensagens!\n\nVeja no console (F12).`);
+        console.log('🔍 Resultados:', data);
+      } catch (error) {
+        alert('❌ Erro ao buscar');
+      }
+    }
+
+    function viewHistory(number) {
+      switchTab('history');
+      setTimeout(() => loadChat(number), 300);
+    }
+    
+    function updateUptime() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const hours = Math.floor(elapsed / 3600);
+      const minutes = Math.floor((elapsed % 3600) / 60);
+      
+      document.getElementById('uptime').textContent = 
+        hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+    }
+    
+    function downloadQR() {
+      const qrImage = document.getElementById('qr-image');
+      if (qrImage) {
+        const link = document.createElement('a');
+        link.href = qrImage.src;
+        link.download = 'multsolutions-qrcode.png';
+        link.click();
+      }
+    }
+    
+    // Inicializa
+    loadWebhookConfig();
+    updateStatus();
+    updateStats();
+    loadLeads();
+    
+    setInterval(updateStatus, 2000);
+    setInterval(updateStats, 5000);
+    setInterval(loadLeads, 10000);
+    setInterval(updateUptime, 1000);
+    
+    console.log('🤖 Dashboard MultSolutions v3.0 carregado!');
+    console.log('💬 Sistema de histórico integrado!');
+  </script>
+</body>
+</html>

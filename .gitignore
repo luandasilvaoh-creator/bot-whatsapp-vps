@@ -1,0 +1,220 @@
+# ============================================
+# .GITIGNORE - BOT WHATSAPP MULTSOLUTIONS
+# ============================================
+
+# ============================================
+# ⚠️ DADOS SENSÍVEIS - NUNCA COMMITAR!
+# ============================================
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Autenticação WhatsApp (contém sessão ativa)
+auth/
+auth_info/
+baileys_store/
+baileys_auth_info/
+
+# Dados de leads (informações pessoais dos clientes)
+src/leads/*.json
+leads/*.json
+
+# Histórico de conversas (LGPD/GDPR)
+src/chat-history/*.json
+chat-history/*.json
+
+# Backups (podem conter dados sensíveis)
+backups/
+*.tar.gz
+*.zip
+backup_*
+
+# ============================================
+# NODE.JS
+# ============================================
+
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Lock files (escolha um e ignore os outros)
+# package-lock.json  # Se usar yarn, descomente
+# yarn.lock          # Se usar npm, descomente
+
+# ============================================
+# TYPESCRIPT
+# ============================================
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ============================================
+# LOGS
+# ============================================
+
+logs/
+*.log
+log/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PM2 logs
+.pm2/
+pm2-*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+# SISTEMA OPERACIONAL
+# ============================================
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# IDEs e EDITORES
+# ============================================
+
+# VSCode
+.vscode/
+*.code-workspace
+.history/
+
+# JetBrains (WebStorm, PhpStorm, etc)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# ============================================
+# TESTES e COVERAGE
+# ============================================
+
+coverage/
+*.lcov
+.nyc_output/
+.cache/
+test-results/
+junit.xml
+
+# ============================================
+# TEMPORÁRIOS
+# ============================================
+
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ============================================
+# DOCKER (LOCAL)
+# ============================================
+
+# Dados de volumes Docker locais
+docker-volumes/
+.docker/
+
+# ============================================
+# SSL/CERTIFICADOS
+# ============================================
+
+# Certificados SSL (devem ser gerenciados via Certbot)
+nginx/ssl/*.key
+nginx/ssl/*.pem
+nginx/ssl/*.crt
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# ============================================
+# DADOS DE DESENVOLVIMENTO
+# ============================================
+
+# SQLite databases locais
+*.db
+*.sqlite
+*.sqlite3
+
+# Redis dumps
+dump.rdb
+
+# ============================================
+# MISC
+# ============================================
+
+# Arquivos de debug
+debug.log
+npm-debug.log*
+
+# Arquivos específicos do projeto
+.cache-loader/
+.eslintcache
+.stylelintcache
+
+# Upload de usuários (se houver)
+uploads/
+public/uploads/
+
+# ============================================
+# MANTER ESTRUTURA DE PASTAS VAZIAS
+# ============================================
+
+# Para manter pastas vazias no Git, crie arquivos .gitkeep
+# Exemplo: echo "" > src/leads/.gitkeep
+!src/leads/.gitkeep
+!src/chat-history/.gitkeep
+!auth/.gitkeep
+!logs/.gitkeep
