@@ -239,7 +239,7 @@ PORT=8001
 NODE_ENV=production
 
 # Webhook N8N (opcional)
-N8N_WEBHOOK_URL=https://n8nwebhook.multsolutions.com.br/webhook/bot-atendimento
+N8N_WEBHOOK_URL=
 
 # Número do atendente (formato internacional)
 ATENDENTE_NUMBER=558584460424
